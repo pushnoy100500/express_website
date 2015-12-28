@@ -1,0 +1,21 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href="/stylesheets/bootstrap.css")
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src="https://code.jquery.com/jquery-1.11.3.min.js")
+    script(src="/javascripts/bootstrap.js")
+  body
+        ul
+            li
+                a(href='/') Member
+            li
+                a(href='/users/register') Register
+            li
+                a(href='/users/logout') Logout
+            li
+                a(href='/users/login') Login
+                
+    block content
+
