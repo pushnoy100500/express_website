@@ -23,6 +23,7 @@
     "passport": "*",
     "passport-local": "*",
     "passport-http": "*",
-    "multer": "*"
+    "multer": "*",
+    "bcrypt": "*"
   }
 }

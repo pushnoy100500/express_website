@@ -1,5 +1,8 @@
 var express = require('express');
 var router = express.Router();
+var crypto = require('crypto');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
 var User = require('../models/user.js');
 
 /* GET users listing. */
@@ -40,6 +43,7 @@ router.post('/register', function(req, res, next) {
 			var avatar = "noAvatar.jpg";
 			res.end('no file');
 		}
+		password = crypto.createHash("md5").update(password).digest('hex');
 		var newUser = new User({
 			name: name,
 			email: email,
@@ -55,5 +59,35 @@ router.post('/register', function(req, res, next) {
 		});
 	}
 });
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+  User.getById(id, function(err, user) {
+    done(err, user);
+  });
+});
+passport.use(new LocalStrategy(
+		function(username, password, callback) {
+			User.getByUsername(username, function(err, user) {
+				if(err) throw err;
+				if(!user) {
+					console.dir("no user found");
+					return callback(null, false, {message: 'no user was found'});
+				}
+				if(!User.isValidPassword(user, password)) {
+					return callback(null, false, {message: 'Incorrect password'});
+				}
+				console.log(user);
+				return callback(null, user);
+			});
+
+		}
+	));
+router.post('/login', passport.authenticate('local', {
+	successRedirect: '/',
+	failureRedirect: '/users/login'
+}))
 
 module.exports = router;
